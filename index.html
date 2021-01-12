@@ -2,7 +2,7 @@
   <head>
     <script
       type="text/javascript"
-      src="//dl.frontapp.com/libs/plugin-sdk-1.0.1.min.js"
+      src="https://dl.frontapp.com/libs/plugin-sdk-1.0.1.min.js"
     ></script>
     <style>
       .button-container {
@@ -26,8 +26,64 @@
     </style>
   </head>
   <body>
+    <div class="button-container">
+      <button>Get loan file</button>
+      <button>Get GPT-3 response</button>
+    </div>
+
     <script type="text/javascript">
-      console.log((`Front object:`, window.Front));
+      console.log(`Front object:`, window.Front);
+
+      const setLoanFileStatus = async function () {
+        fetch("https://better.com/api/ceapo/hello")
+          .then((response) => {
+            if (!response.data) throw Error(response.statusText);
+
+            return response.json();
+          })
+          .then((json) => setUser(response.data));
+      };
+
+      const getGPT3Response = async function () {
+        // fetch("https://better.com/api/ceapo/hello")
+        //   .then((response) => {
+        //     if (!response.data) throw Error(response.statusText);
+
+        //     return response.json();
+        //   })
+        //   .then((json) => createDraft(response.data))
+        //   .catch((e) => {
+        //     console.log(`Error`, e);
+        //   });
+        return {
+          text: `I’m sorry to hear that you were having some difficulty with your application. It looks like the issue stems from your credit score. Currently, the minimum credit score that Better can work with is 620, and it appears that what we pulled falls below that number.`,
+        };
+      };
+
+      const getDOM = () => {
+        const buttons = document.querySelectorAll("button");
+
+        return buttons;
+      };
+
+      const setEventHandlers = () => {
+        const [loanFileBtn, gptButton] = getDOM();
+
+        loanFileBtn.addEventListener("click", (latestContext) => {
+          console.log("get loan file", Front);
+
+          Front.openUrl(
+            "https://admin.bettermg.com/oz/borrower-context/account:2650506/259bac06-7628-425b-ab28-62727d8c323b"
+          );
+        });
+
+        gptButton.addEventListener("click", console.log("create draft"));
+      };
+
+      const createDraft = function () {
+        console.log("creating draft");
+      };
+
       Front.contextUpdates.subscribe((context) => {
         switch (context.type) {
           case "noConversation":
@@ -47,10 +103,9 @@
             break;
         }
       });
+
+      setLoanFileStatus();
+      setEventHandlers();
     </script>
-    <div class="button-container">
-      <button>Get loan file</button>
-      <button>Get GPT-3 response</button>
-    </div>
   </body>
 </html>
