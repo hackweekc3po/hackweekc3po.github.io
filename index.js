@@ -10,7 +10,10 @@ const getLoanFileLink = async function () {
 };
 
 const getGPT3Response = async function (context) {
-  console.log(`Front list Messages`, Front.listMessages());
+  Front.listMessages().then((messages) => {
+    console.log(`Front list Messages`, messages);
+  });
+
   console.log(`Front conversation`, context.conversation);
   const prompt = context.conversation;
   // fetch("https://better.com/api/ceapo/hello", {
