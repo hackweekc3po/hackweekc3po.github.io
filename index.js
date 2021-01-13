@@ -68,23 +68,24 @@ const getCurrentMessageId = (messages) => {
   return results[0].id;
 };
 
-const setEventHandlers = (context) => {
+const setEventHandlers = () => {
   const [loanFileBtn, gptButton] = getDOM();
 
-  loanFileBtn.addEventListener("click", () => {
-    console.log("get loan file", Front);
+  // disabled for now, triggering too many open windows
+  //   loanFileBtn.addEventListener("click", () => {
+  //     console.log("get loan file", Front);
 
-    getLoanFileLink().then((link) => Front.openUrl(link));
-  });
+  //     getLoanFileLink().then((link) => Front.openUrl(link));
+  //   });
 
   gptButton.addEventListener("click", () => {
     Front.listMessages()
       .then((messages) => {
         console.log(`Front list Messages`, messages);
         getGPT3Response(messages).then((messages) => {
-          createDraft(messages);
+          const completion = createDraft(messages);
+          console.log(`Here is completion`, completion);
         });
-        console.log(`Here is completion`, completion);
       })
       .catch((e) => {
         console.log(`Front unable to return List messages`, e);
@@ -116,7 +117,7 @@ const createDraft = async function (completion) {
    and capture when a new conversation or inbox message
    is selected
 */
-Front.contextUpdates.subscribe((context) => {
+Front.contextUpdates.subscribe(() => {
   switch (context.type) {
     case "noConversation":
       console.log("No conversation selected");
@@ -131,5 +132,6 @@ Front.contextUpdates.subscribe((context) => {
       console.error(`Unsupported context type: ${context.type}`);
       break;
   }
-  setEventHandlers(context);
 });
+
+setEventHandlers();
