@@ -10,8 +10,8 @@ const getLoanFileLink = async function () {
 };
 
 const getGPT3Response = async function (context) {
-  console.log(Front.listMessages());
-  console.log(context.conversation);
+  console.log(`Front list Messages`, Front.listMessages());
+  console.log(`Front conversation`, context.conversation);
   const prompt = context.conversation;
   // fetch("https://better.com/api/ceapo/hello", {
   //   method: "POST",
@@ -54,6 +54,7 @@ const setEventHandlers = (context) => {
 
 const createDraft = async function (context, response) {
   console.log("creating draft", context.conversation, response);
+  const prompt = context.conversation;
 
   const draft = await Front.createDraft({
     content: {
@@ -62,7 +63,7 @@ const createDraft = async function (context, response) {
     },
     replyOptions: {
       type: "reply",
-      originalMessageId: "",
+      originalMessageId: prompt.id,
     },
   });
 };
