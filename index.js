@@ -81,9 +81,10 @@ const setEventHandlers = (context) => {
     Front.listMessages()
       .then((messages) => {
         console.log(`Front list Messages`, messages);
-        const completion = getGPT3Response(messages);
+        getGPT3Response(messages).then((messages) => {
+          createDraft(messages);
+        });
         console.log(`Here is completion`, completion);
-        createDraft(completion);
       })
       .catch((e) => {
         console.log(`Front unable to return List messages`, e);
