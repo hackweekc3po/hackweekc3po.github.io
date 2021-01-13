@@ -9,36 +9,62 @@ const getLoanFileLink = async function () {
   return `https://admin.bettermg.com/oz/borrower-context/account:2650506/259bac06-7628-425b-ab28-62727d8c323b`;
 };
 
-const getGPT3Response = async function (context) {
-  Front.listMessages().then((messages) => {
-    console.log(`Front list Messages`, messages);
-  });
+/**
+ * Call CEA3PO BE service with relevant prompt
+ * @param {*} messages
+ */
+const getGPT3Response = async function (messages) {
+  const prompt = formatPrompt(messages);
+  // TODO: format prompt sent to BE to include entire thread of messages
 
-  console.log(`Front conversation`, context.conversation);
-  const prompt = context.conversation;
   // fetch("https://better.com/api/ceapo/hello", {
   //   method: "POST",
   //   body: prompt,
   // })
   //   .then((response) => {
   //     if (!response.draft_reply) throw Error(response.statusText);
-
   //     return response.json();
   //   })
-  //   .then((json) => createDraft(response.draft_reply))
   //   .catch((e) => {
   //     console.log(`Error`, e);
   //     display messages here
   //   });
   return {
+    messageId: getCurrentMessageId(messages),
     draft_reply: `I\'m sorry to hear that you were having some difficulty with your application. It looks like the issue stems from your credit score. Currently, the minimum credit score that Better can work with is 620, and it appears that what we pulled falls below that number.`,
   };
+};
+
+const getFrontListMessages = async function (context) {
+  console.log(`Front conversation`, context.conversation);
+
+  // draft reply from BE response
+  Front.listMessages()
+    .then((messages) => {
+      console.log(`Front list Messages`, messages);
+      const completion = getGPT3Response(messages);
+      console.log(`Here is completion`, completion);
+      return completion;
+    })
+    .catch((e) => {
+      console.log(`Front unable to return List messages`, e);
+    });
 };
 
 const getDOM = () => {
   const buttons = document.querySelectorAll("button");
 
   return buttons;
+};
+
+const formatPrompt = (messages) => {
+  // TODO: pick out data from messages, below is mocked
+  return [{ sender: "staff", body: "Is my credit score too low to apply?" }];
+};
+
+const getCurrentMessageId = (messages) => {
+  const { results } = messages;
+  return results[0].id;
 };
 
 const setEventHandlers = (context) => {
@@ -51,17 +77,17 @@ const setEventHandlers = (context) => {
   });
 
   gptButton.addEventListener("click", () => {
-    getGPT3Response(context).then((response) => createDraft(context, response));
+    getFrontListMessages(messages).then((draftData) => createDraft(draftData));
   });
 };
 
-const createDraft = async function (context, response) {
+const createDraft = async function (draftData) {
   console.log("creating draft", context.conversation, response);
-  const prompt = context.conversation;
+  const { prompt, draft_reply } = draftData;
 
   const draft = await Front.createDraft({
     content: {
-      body: response.draft_reply,
+      body: draft_reply,
       type: "text",
     },
     replyOptions: {
