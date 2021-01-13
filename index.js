@@ -71,12 +71,11 @@ const getCurrentMessageId = (messages) => {
 const setEventHandlers = () => {
   const [loanFileBtn, gptButton] = getDOM();
 
-  // disabled for now, triggering too many open windows
-  //   loanFileBtn.addEventListener("click", () => {
-  //     console.log("get loan file", Front);
+  loanFileBtn.addEventListener("click", () => {
+    console.log("get loan file", Front);
 
-  //     getLoanFileLink().then((link) => Front.openUrl(link));
-  //   });
+    getLoanFileLink().then((link) => Front.openUrl(link));
+  });
 
   gptButton.addEventListener("click", () => {
     Front.listMessages()
