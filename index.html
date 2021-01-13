@@ -1,9 +1,5 @@
 <html>
   <head>
-    <script
-      type="text/javascript"
-      src="https://dl.frontapp.com/libs/plugin-sdk-1.0.1.min.js"
-    ></script>
     <style>
       .button-container {
         display: flex;
@@ -23,101 +19,27 @@
           "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji",
           "Segoe UI Emoji", "Segoe UI Symbol";
       }
+
+      .error-messages {
+        color: red;
+        border: solid 1px red;
+        padding: 10px;
+        margin: 10px;
+        display: none;
+      }
     </style>
   </head>
   <body>
+    <div class="error-messages">Here is an error</div>
     <div class="button-container">
       <button>Get loan file</button>
       <button>Get GPT-3 response</button>
     </div>
 
-    <script type="text/javascript">
-      const getLoanFileLink = async function () {
-        // fetch("https://better.com/api/ceapo/hello")
-        //   .then((response) => {
-        //     if (!response.data) throw Error(response.statusText);
-
-        //     return response.json();
-        //   })
-        //   .then((json) => setUser(response.data));
-        return `https://admin.bettermg.com/oz/borrower-context/account:2650506/259bac06-7628-425b-ab28-62727d8c323b`;
-      };
-
-      const getGPT3Response = async function () {
-        console.log(Front.listMessages());
-        // fetch("https://better.com/api/ceapo/hello", {
-        //   method: "post",
-        //   body: Front.listMessages(),
-        // })
-        //   .then((response) => {
-        //     if (!response.data) throw Error(response.statusText);
-
-        //     return response.json();
-        //   })
-        //   .then((json) => createDraft(response.data))
-        //   .catch((e) => {
-        //     console.log(`Error`, e);
-        //   });
-        return {
-          draft_reply: `I’m sorry to hear that you were having some difficulty with your application. It looks like the issue stems from your credit score. Currently, the minimum credit score that Better can work with is 620, and it appears that what we pulled falls below that number.`,
-        };
-      };
-
-      const getDOM = () => {
-        const buttons = document.querySelectorAll("button");
-
-        return buttons;
-      };
-
-      const setEventHandlers = () => {
-        const [loanFileBtn, gptButton] = getDOM();
-
-        loanFileBtn.addEventListener("click", (latestContext) => {
-          console.log("get loan file", Front);
-
-          Front.openUrl(getLoanFileLink());
-        });
-
-        gptButton.addEventListener("click", () => {
-          getGPT3Response().then((response) => createDraft(response));
-        });
-      };
-
-      const createDraft = async function (response) {
-        console.log("creating draft", response);
-
-        const draft = await Front.createDraft({
-          content: {
-            body: response,
-            type: "text",
-          },
-          replyOptions: {
-            type: "reply",
-            originalMessageId: "",
-          },
-        });
-      };
-
-      Front.contextUpdates.subscribe((context) => {
-        switch (context.type) {
-          case "noConversation":
-            console.log("No conversation selected");
-            break;
-          case "singleConversation":
-            console.log("Selected conversation:", context.conversation);
-            break;
-          case "multiConversations":
-            console.log(
-              "Multiple conversations selected",
-              context.conversations
-            );
-            break;
-          default:
-            console.error(`Unsupported context type: ${context.type}`);
-            break;
-        }
-      });
-      setEventHandlers();
-    </script>
+    <script
+      type="text/javascript"
+      src="https://dl.frontapp.com/libs/plugin-sdk-1.0.1.min.js"
+    ></script>
+    <script type="text/javascript" src="index.js"></script>
   </body>
 </html>
