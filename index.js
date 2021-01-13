@@ -15,6 +15,7 @@ const getLoanFileLink = async function () {
  */
 const getGPT3Response = async function (messages) {
   const prompt = formatPrompt(messages);
+  console.log(`returning mock response...`);
   // TODO: format prompt sent to BE to include entire thread of messages
 
   // fetch("https://better.com/api/ceapo/hello", {
@@ -77,7 +78,7 @@ const setEventHandlers = (context) => {
   });
 
   gptButton.addEventListener("click", () => {
-    getFrontListMessages(messages).then((draftData) => createDraft(draftData));
+    getFrontListMessages(context).then((draftData) => createDraft(draftData));
   });
 };
 
