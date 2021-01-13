@@ -18,22 +18,23 @@ const getGPT3Response = async function (messages) {
   console.log(`returning mock response...`);
   // TODO: format prompt sent to BE to include entire thread of messages
 
-  // fetch("https://better.com/api/ceapo/hello", {
-  //   method: "POST",
-  //   body: prompt,
-  // })
-  //   .then((response) => {
-  //     if (!response.draft_reply) throw Error(response.statusText);
-  //     return response.json();
-  //   })
-  //   .catch((e) => {
-  //     console.log(`Error`, e);
-  //     display messages here
-  //   });
-  return {
-    messageId: getCurrentMessageId(messages),
-    draft_reply: `I\'m sorry to hear that you were having some difficulty with your application. It looks like the issue stems from your credit score. Currently, the minimum credit score that Better can work with is 620, and it appears that what we pulled falls below that number.`,
-  };
+  fetch("https://better.com/api/ceapo/get_draft_reply", {
+    method: "POST",
+    body: prompt,
+  })
+    .then((response) => {
+      if (!response.draft_reply) throw Error(response.statusText);
+      return formatCompletion(response.json(), messages);
+    })
+    .catch((e) => {
+      console.log(`Error`, e);
+      //display messages here
+    });
+
+  //   return {
+  //     messageId: getCurrentMessageId(messages),
+  //     draft_reply: `I\'m sorry to hear that you were having some difficulty with your application. It looks like the issue stems from your credit score. Currently, the minimum credit score that Better can work with is 620, and it appears that what we pulled falls below that number.`,
+  //   };
 };
 
 // const getFrontListMessages = async function (context) {
@@ -56,6 +57,13 @@ const getDOM = () => {
   const buttons = document.querySelectorAll("button");
 
   return buttons;
+};
+
+const formatCompletion = (response, messages) => {
+  return {
+    messageId: getCurrentMessageId(messages),
+    draft_reply: response.draft_reply,
+  };
 };
 
 const formatPrompt = (messages) => {
