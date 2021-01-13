@@ -32,20 +32,23 @@
     </div>
 
     <script type="text/javascript">
-      console.log(`Front object:`, window.Front);
+      const getLoanFileLink = async function () {
+        // fetch("https://better.com/api/ceapo/hello")
+        //   .then((response) => {
+        //     if (!response.data) throw Error(response.statusText);
 
-      const setLoanFileStatus = async function () {
-        fetch("https://better.com/api/ceapo/hello")
-          .then((response) => {
-            if (!response.data) throw Error(response.statusText);
-
-            return response.json();
-          })
-          .then((json) => setUser(response.data));
+        //     return response.json();
+        //   })
+        //   .then((json) => setUser(response.data));
+        return `https://admin.bettermg.com/oz/borrower-context/account:2650506/259bac06-7628-425b-ab28-62727d8c323b`;
       };
 
       const getGPT3Response = async function () {
-        // fetch("https://better.com/api/ceapo/hello")
+        console.log(Front.listMessages());
+        // fetch("https://better.com/api/ceapo/hello", {
+        //   method: "post",
+        //   body: Front.listMessages(),
+        // })
         //   .then((response) => {
         //     if (!response.data) throw Error(response.statusText);
 
@@ -56,7 +59,7 @@
         //     console.log(`Error`, e);
         //   });
         return {
-          text: `I’m sorry to hear that you were having some difficulty with your application. It looks like the issue stems from your credit score. Currently, the minimum credit score that Better can work with is 620, and it appears that what we pulled falls below that number.`,
+          draft_reply: `I’m sorry to hear that you were having some difficulty with your application. It looks like the issue stems from your credit score. Currently, the minimum credit score that Better can work with is 620, and it appears that what we pulled falls below that number.`,
         };
       };
 
@@ -72,16 +75,27 @@
         loanFileBtn.addEventListener("click", (latestContext) => {
           console.log("get loan file", Front);
 
-          Front.openUrl(
-            "https://admin.bettermg.com/oz/borrower-context/account:2650506/259bac06-7628-425b-ab28-62727d8c323b"
-          );
+          Front.openUrl(getLoanFileLink());
         });
 
-        gptButton.addEventListener("click", console.log("create draft"));
+        gptButton.addEventListener("click", () => {
+          getGPT3Response().then((response) => createDraft(response));
+        });
       };
 
-      const createDraft = function () {
-        console.log("creating draft");
+      const createDraft = async function (response) {
+        console.log("creating draft", response);
+
+        const draft = await Front.createDraft({
+          content: {
+            body: response,
+            type: "text",
+          },
+          replyOptions: {
+            type: "reply",
+            originalMessageId: "",
+          },
+        });
       };
 
       Front.contextUpdates.subscribe((context) => {
@@ -103,8 +117,6 @@
             break;
         }
       });
-
-      setLoanFileStatus();
       setEventHandlers();
     </script>
   </body>
