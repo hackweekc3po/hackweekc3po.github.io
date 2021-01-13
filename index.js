@@ -83,7 +83,7 @@ const setEventHandlers = (context) => {
 };
 
 const createDraft = async function (draftData) {
-  console.log("creating draft", context.conversation, response);
+  console.log("creating draft", draftData);
   const { prompt, draft_reply } = draftData;
 
   const draft = await Front.createDraft({
