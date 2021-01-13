@@ -36,21 +36,21 @@ const getGPT3Response = async function (messages) {
   };
 };
 
-const getFrontListMessages = async function (context) {
-  console.log(`Front conversation`, context.conversation);
+// const getFrontListMessages = async function (context) {
+//   console.log(`Front conversation`, context.conversation);
 
-  // draft reply from BE response
-  Front.listMessages()
-    .then((messages) => {
-      console.log(`Front list Messages`, messages);
-      const completion = getGPT3Response(messages);
-      console.log(`Here is completion`, completion);
-      return completion;
-    })
-    .catch((e) => {
-      console.log(`Front unable to return List messages`, e);
-    });
-};
+//   // draft reply from BE response
+//   Front.listMessages()
+//     .then((messages) => {
+//       console.log(`Front list Messages`, messages);
+//       const completion = getGPT3Response(messages);
+//       console.log(`Here is completion`, completion);
+//       return completion;
+//     })
+//     .catch((e) => {
+//       console.log(`Front unable to return List messages`, e);
+//     });
+// };
 
 const getDOM = () => {
   const buttons = document.querySelectorAll("button");
@@ -78,13 +78,22 @@ const setEventHandlers = (context) => {
   });
 
   gptButton.addEventListener("click", () => {
-    getFrontListMessages(context).then((draftData) => createDraft(draftData));
+    Front.listMessages()
+      .then((messages) => {
+        console.log(`Front list Messages`, messages);
+        const completion = getGPT3Response(messages);
+        console.log(`Here is completion`, completion);
+        createDraft(completion);
+      })
+      .catch((e) => {
+        console.log(`Front unable to return List messages`, e);
+      });
   });
 };
 
-const createDraft = async function (draftData) {
-  console.log("creating draft", draftData);
-  const { prompt, draft_reply } = draftData;
+const createDraft = async function (completion) {
+  console.log("creating draft", completion);
+  const { messageId, draft_reply } = completion;
 
   const draft = await Front.createDraft({
     content: {
@@ -93,7 +102,7 @@ const createDraft = async function (draftData) {
     },
     replyOptions: {
       type: "reply",
-      originalMessageId: prompt.id,
+      originalMessageId: messageId,
     },
   });
 };
