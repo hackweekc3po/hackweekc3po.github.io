@@ -20,7 +20,9 @@ const getGPT3Response = async function (messages) {
 
   fetch("https://better.com/api/ceapo/get_draft_reply", {
     method: "POST",
-    "Content-Type": "application/json",
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: prompt,
   })
     .then((response) => {
@@ -98,8 +100,7 @@ const setEventHandlers = () => {
       .then((messages) => {
         console.log(`Front list Messages`, messages);
         getGPT3Response(messages).then((messages) => {
-          const completion = createDraft(messages);
-          console.log(`Here is completion`, completion);
+          createDraft(messages);
         });
       })
       .catch((e) => {
@@ -108,13 +109,12 @@ const setEventHandlers = () => {
   });
 };
 
-const createDraft = async function (completion = {}) {
+const createDraft = function (completion = {}) {
   if (!Object.keys(completion).length) return;
-
-  console.log("creating draft", completion);
   const { messageId, draft_reply } = completion;
+  console.log("creating draft", completion);
 
-  const draft = await Front.createDraft({
+  Front.createDraft({
     content: {
       body: draft_reply,
       type: "text",
