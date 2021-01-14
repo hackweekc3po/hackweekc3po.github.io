@@ -72,7 +72,7 @@ const formatPrompt = (messages) => {
   return messages.results.map((thread) => {
     return {
       sender: thread.status === "outbound" ? "staff" : "borrower",
-      body: thread.content.body,
+      body: "",
     };
   });
 };
