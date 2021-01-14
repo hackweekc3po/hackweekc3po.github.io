@@ -1,12 +1,14 @@
-const getLoanFileLink = async function () {
-  // fetch("https://better.com/api/ceapo/hello")
-  //   .then((response) => {
-  //     if (!response.data) throw Error(response.statusText);
+const getLoanFileLink = async function (messages) {
+  fetch(`https://admin.bettermg.com/api/ceapo/lookup?nolivo@better.com`)
+    .then((response) => {
+      if (!response.data) throw Error(response.statusText);
 
-  //     return response.json();
-  //   })
-  //   .then((json) => setUser(response.data));
-  return `https://admin.bettermg.com/oz/borrower-context/account:2650506/259bac06-7628-425b-ab28-62727d8c323b`;
+      return response.json();
+    })
+    .then((json) => {
+      console.log(json);
+    });
+  //return `https://admin.bettermg.com/oz/borrower-context/account:2650506/259bac06-7628-425b-ab28-62727d8c323b`;
 };
 
 /**
@@ -14,7 +16,11 @@ const getLoanFileLink = async function () {
  * @param {*} messages
  */
 const getGPT3Response = async function (messages) {
-  console.log(`returning mock response...`, formatPrompt(messages));
+  console.log(
+    `returning mock response...`,
+    formatPrompt(messages),
+    typeof formatPrompt(messages)
+  );
   // TODO: format prompt sent to BE to include entire thread of messages
 
   fetch("https://better.com/api/ceapo/get_draft_reply", {
@@ -22,7 +28,7 @@ const getGPT3Response = async function (messages) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: formatPrompt(messages),
+    body: [formatPrompt(messages)[0]],
   })
     .then((response) => {
       console.log(`response`, response);
