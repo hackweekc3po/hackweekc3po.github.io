@@ -28,7 +28,7 @@ const getGPT3Response = async function (messages) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: [formatPrompt(messages)[0]],
+    body: JSON.stringify(formatPrompt(messages)),
   })
     .then((response) => {
       console.log(`response`, response);
