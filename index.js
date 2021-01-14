@@ -4,8 +4,6 @@ const getLoanFileLink = async function (messages) {
     credentials: "same-origin",
   })
     .then((response) => {
-      if (!response.data) throw Error(response.statusText);
-
       return response.json();
     })
     .then((json) => {
