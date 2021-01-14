@@ -15,7 +15,7 @@ const getLoanFileLink = async function () {
  */
 const getGPT3Response = async function (messages) {
   const prompt = formatPrompt(messages);
-  console.log(`returning mock response...`, prompt);
+  console.log(`returning mock response...`, prompt[0]);
   // TODO: format prompt sent to BE to include entire thread of messages
 
   fetch("https://better.com/api/ceapo/get_draft_reply", {
@@ -23,7 +23,7 @@ const getGPT3Response = async function (messages) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: prompt,
+    body: prompt[0],
   })
     .then((response) => {
       if (!response.draft_reply) throw Error(response.statusText);
