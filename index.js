@@ -1,12 +1,11 @@
 const getLoanFileLink = async function (messages) {
-  const AuthHeaders = new Headers();
-  AuthHeaders.append(
-    "x-jwt",
-    `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJibGFja0BiZXR0ZXIuY29tIn0
+  const jwtHttpHeader = {
+    "x-jwt": `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJibGFja0BiZXR0ZXIuY29tIn0
       .PGzFY1OQ4Wh -
       rN41xI7 -
-      jSaB2eljF_zWuuvAZUd4J_8`
-  );
+      jSaB2eljF_zWuuvAZUd4J_8`,
+  };
+  const AuthHeaders = new Headers(jwtHttpHeader);
 
   fetch(`https://admin.bettermg.com/api/ceapo/lookup?email=bblack@better.com`, {
     method: "GET",
