@@ -15,7 +15,7 @@ const getLoanFileLink = async function (messages) {
  * Call CEA3PO BE service with relevant prompt
  * @param {*} messages
  */
-const getGPT3Response = async function (messages) {
+const getGPT3Response = function (messages) {
   console.log(
     `returning mock response...`,
     formatPrompt(messages),
@@ -32,7 +32,7 @@ const getGPT3Response = async function (messages) {
   })
     .then((response) => {
       console.log(`response`, response);
-      return formatCompletion(response.json(), messages);
+      createDraft(formatCompletion(response.json(), messages));
     })
     .catch((e) => {
       console.log(`Error`, e);
@@ -102,9 +102,7 @@ const setEventHandlers = () => {
     Front.listMessages()
       .then((messages) => {
         console.log(`Front list Messages`, messages);
-        getGPT3Response(messages).then((messages) => {
-          createDraft(messages);
-        });
+        getGPT3Response(messages);
       })
       .catch((e) => {
         console.log(`Front unable to return List messages`, e);
