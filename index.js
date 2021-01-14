@@ -71,8 +71,9 @@ const formatCompletion = (response, messages) => {
 const formatPrompt = (messages) => {
   return messages.results.map((thread) => {
     return {
-      sender: thread.status === "outbound" ? "staff" : "borrower",
-      body: "",
+      //sender: thread.status === "outbound" ? "staff" : "customer",
+      sender: "customer",
+      body: thread.content.body,
     };
   });
 };
