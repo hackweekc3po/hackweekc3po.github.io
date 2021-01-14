@@ -23,7 +23,7 @@ const getGPT3Response = async function (messages) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: prompt[0],
+    body: JSON.stringify(prompt),
   })
     .then((response) => {
       if (!response.draft_reply) throw Error(response.statusText);
