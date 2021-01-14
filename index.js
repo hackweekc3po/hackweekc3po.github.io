@@ -1,5 +1,17 @@
 const getLoanFileLink = async function (messages) {
-  fetch(`https://admin.bettermg.com/api/ceapo/lookup?nolivo@better.com`)
+  const AuthHeaders = new Headers();
+  AuthHeaders.append(
+    "x-jwt",
+    `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJibGFja0BiZXR0ZXIuY29tIn0
+      .PGzFY1OQ4Wh -
+      rN41xI7 -
+      jSaB2eljF_zWuuvAZUd4J_8`
+  );
+
+  fetch(`https://admin.bettermg.com/api/ceapo/lookup?email=bblack@better.com`, {
+    method: "GET",
+    headers: AuthHeaders,
+  })
     .then((response) => {
       if (!response.data) throw Error(response.statusText);
 
@@ -16,12 +28,8 @@ const getLoanFileLink = async function (messages) {
  * @param {*} messages
  */
 const getGPT3Response = function (messages) {
-  console.log(
-    `returning mock response...`,
-    formatPrompt(messages),
-    typeof formatPrompt(messages)
-  );
-  // TODO: format prompt sent to BE to include entire thread of messages
+  hideErrorState();
+  console.log(`returning mock response...`, formatPrompt(messages));
 
   fetch("https://better.com/api/ceapo/get_draft_reply", {
     method: "POST",
@@ -31,12 +39,18 @@ const getGPT3Response = function (messages) {
     body: JSON.stringify(formatPrompt(messages)),
   })
     .then((response) => {
-      console.log(`response`, response);
-      createDraft(formatCompletion(response.json(), messages));
+      const json = response.json();
+      const { draft_reply } = json;
+
+      console.log(`response`, json);
+      if (draft_reply) {
+        createDraft(formatCompletion(draft_reply, messages));
+      } else {
+        showErrorState();
+      }
     })
     .catch((e) => {
       console.log(`Error`, e);
-      //display messages here
     });
 
   //   return {
@@ -61,10 +75,20 @@ const getGPT3Response = function (messages) {
 //     });
 // };
 
-const getDOM = () => {
+const getDOMButtons = () => {
   const buttons = document.querySelectorAll("button");
 
   return buttons;
+};
+
+const hideErrorState = () => {
+  const errorBox = document.querySelector(".error-messages");
+  errorBox.classList.add("error-hidden");
+};
+
+const showErrorState = () => {
+  const errorBox = document.querySelector(".error-messages");
+  errorBox.classList.remove("error-hidden");
 };
 
 const formatCompletion = (response, messages) => {
@@ -90,7 +114,7 @@ const getCurrentMessageId = (messages) => {
 };
 
 const setEventHandlers = () => {
-  const [loanFileBtn, gptButton] = getDOM();
+  const [loanFileBtn, gptButton] = getDOMButtons();
 
   loanFileBtn.addEventListener("click", () => {
     console.log("get loan file", Front);
