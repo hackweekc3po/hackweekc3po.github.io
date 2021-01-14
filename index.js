@@ -20,7 +20,7 @@ const getGPT3Response = async function (messages) {
 
   fetch("https://better.com/api/ceapo/get_draft_reply", {
     method: "POST",
-    body: prompt,
+    body: JSON.stringify(prompt),
   })
     .then((response) => {
       if (!response.draft_reply) throw Error(response.statusText);
@@ -133,21 +133,21 @@ const createDraft = async function (completion = {}) {
    and capture when a new conversation or inbox message
    is selected
 */
-Front.contextUpdates.subscribe(() => {
-  switch (context.type) {
-    case "noConversation":
-      console.log("No conversation selected");
-      break;
-    case "singleConversation":
-      console.log("Selected conversation:", context.conversation);
-      break;
-    case "multiConversations":
-      console.log("Multiple conversations selected", context.conversations);
-      break;
-    default:
-      console.error(`Unsupported context type: ${context.type}`);
-      break;
-  }
-});
+// Front.contextUpdates.subscribe((context) => {
+//   switch (context.type) {
+//     case "noConversation":
+//       console.log("No conversation selected");
+//       break;
+//     case "singleConversation":
+//       console.log("Selected conversation:", context.conversation);
+//       break;
+//     case "multiConversations":
+//       console.log("Multiple conversations selected", context.conversations);
+//       break;
+//     default:
+//       console.error(`Unsupported context type: ${context.type}`);
+//       break;
+//   }
+// });
 
 setEventHandlers();
