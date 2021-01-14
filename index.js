@@ -20,7 +20,8 @@ const getGPT3Response = async function (messages) {
 
   fetch("https://better.com/api/ceapo/get_draft_reply", {
     method: "POST",
-    body: JSON.stringify(prompt),
+    "Content-Type": "application/json",
+    body: prompt,
   })
     .then((response) => {
       if (!response.draft_reply) throw Error(response.statusText);
@@ -108,7 +109,7 @@ const setEventHandlers = () => {
 };
 
 const createDraft = async function (completion = {}) {
-  if (!completion) return;
+  if (!Object.keys(completion).length) return;
 
   console.log("creating draft", completion);
   const { messageId, draft_reply } = completion;
