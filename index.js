@@ -87,12 +87,25 @@ const formatCompletion = (response, messages) => {
   };
 };
 
+const stripHtml = (html) => {
+  let doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.body.textContent || "";
+};
+
+const mapParticipant = (thread_status) => {
+  const mapping = {
+    "outbound": "staff",
+    "inbound": "customer"
+  }
+
+  return mapping[thread_status];
+};
+
 const formatPrompt = (messages) => {
-  return messages.results.map((thread) => {
+  return messages.results.map((message) => {
     return {
-      //sender: thread.status === "outbound" ? "staff" : "customer",
-      sender: "customer",
-      body: thread.content.body,
+      sender: mapParticipant(message.status),
+      body: stripHtml(message.content.body),
     };
   });
 };
@@ -140,7 +153,7 @@ const createDraft = function (completion = {}) {
   });
 };
 
-/* 
+/*
   Front - subscribe
   Front uses RxJS model and publishes model changes to
    an Observable (context)
