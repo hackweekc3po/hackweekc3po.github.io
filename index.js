@@ -1,12 +1,7 @@
 const getLoanFileLink = async function (messages) {
-  const JWT = `eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9
-      .eyJlbWFpbCI6ImJibGFja0BiZXR0ZXIuY29tIiwianRpIjoiMmM2YTcyOTYtNDQ1Yi00ZDJlLTg3NWUtZmFiMzM5ODZhYzJkIiwiaWF0IjoxNjEwNjMyNDk2LCJleHAiOjE2MTA2MzYwOTZ9
-      .EF8My5b0mkEveQmogtn3_pz1QezfbZnzkCibLXamPzI`;
   fetch(`https://admin.bettermg.com/api/ceapo/lookup?email=bblack@better.com`, {
     method: "GET",
-    headers: {
-      "x-jwt": JWT,
-    },
+    credentials: "same-origin",
   })
     .then((response) => {
       if (!response.data) throw Error(response.statusText);
