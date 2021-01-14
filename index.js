@@ -14,8 +14,7 @@ const getLoanFileLink = async function () {
  * @param {*} messages
  */
 const getGPT3Response = async function (messages) {
-  const prompt = formatPrompt(messages);
-  console.log(`returning mock response...`, prompt[0]);
+  console.log(`returning mock response...`, formatPrompt(messages));
   // TODO: format prompt sent to BE to include entire thread of messages
 
   fetch("https://better.com/api/ceapo/get_draft_reply", {
@@ -23,10 +22,10 @@ const getGPT3Response = async function (messages) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(prompt),
+    body: formatPrompt(messages),
   })
     .then((response) => {
-      if (!response.draft_reply) throw Error(response.statusText);
+      console.log(`response`, response);
       return formatCompletion(response.json(), messages);
     })
     .catch((e) => {
@@ -70,15 +69,12 @@ const formatCompletion = (response, messages) => {
 };
 
 const formatPrompt = (messages) => {
-  let prompt = [];
-  messages.results.forEach((thread) => {
-    prompt.push({
+  return messages.results.map((thread) => {
+    return {
       sender: thread.status === "outbound" ? "staff" : "borrower",
       body: thread.content.body,
-    });
+    };
   });
-
-  return prompt;
 };
 
 const getCurrentMessageId = (messages) => {
