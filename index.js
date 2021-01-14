@@ -1,7 +1,7 @@
 const getLoanFileLink = async function (messages) {
   fetch(`https://admin.bettermg.com/api/ceapo/lookup?email=bblack@better.com`, {
     method: "GET",
-    credentials: "same-origin",
+    credentials: "include",
   })
     .then((response) => {
       return response.json();
