@@ -15,7 +15,7 @@ const getLoanFileLink = async function () {
  */
 const getGPT3Response = async function (messages) {
   const prompt = formatPrompt(messages);
-  console.log(`returning mock response...`);
+  console.log(`returning mock response...`, prompt);
   // TODO: format prompt sent to BE to include entire thread of messages
 
   fetch("https://better.com/api/ceapo/get_draft_reply", {
@@ -67,8 +67,15 @@ const formatCompletion = (response, messages) => {
 };
 
 const formatPrompt = (messages) => {
-  // TODO: pick out data from messages, below is mocked
-  return [{ sender: "staff", body: "Is my credit score too low to apply?" }];
+  let prompt = [];
+  messages.results.forEach((thread) => {
+    prompt.push({
+      sender: thread.status === "outbound" ? "staff" : "borrower",
+      body: thread.content.body,
+    });
+  });
+
+  return prompt;
 };
 
 const getCurrentMessageId = (messages) => {
@@ -100,7 +107,9 @@ const setEventHandlers = () => {
   });
 };
 
-const createDraft = async function (completion) {
+const createDraft = async function (completion = {}) {
+  if (!completion) return;
+
   console.log("creating draft", completion);
   const { messageId, draft_reply } = completion;
 
